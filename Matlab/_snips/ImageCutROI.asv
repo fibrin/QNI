@@ -1,0 +1,7 @@
+function [ Im_out ] = ImageCutROI( Im_in,ROI )
+% ROI=Top,
+Im_out=Im_in(ROI(1,2):ROI(2,2),ROI(1,1):ROI(2,1));
+
+
+end
+

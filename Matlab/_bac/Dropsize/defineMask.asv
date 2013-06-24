@@ -1,0 +1,50 @@
+function [ Mask ] = defineMask( MIM,XIM,ewlw )
+%DEFINEMASK Summary of this function goes here
+%   Detailed explanation goes here
+
+
+        XIM0=lIM;     
+        % horizontzal no    
+        %refpos=[1 1;1 1024;1024 1024];
+        %newpos=[1 1024 ; 1 1 ; 1024 1];
+        %tform = cp2tform(refpos,newpos,'affine');
+        %tform=maketform('affine',[1 0 0; .5 1 0; 0 0 1]);
+        %XIM0= imtransform(lIM,tform,'bilinear','XData',[1 1024], 'YData',[1 1024], 'FillValues',-27342);%
+        %fx=ImageShow(XIM0,'X-ray fliped');
+
+        %filtering the X-ray
+        h = fspecial('average',3);
+        %h = fspecial('disk',5);
+        XIM0=imfilter(XIM0,h,'replicate');
+        fx=ImageShow(XIM0,'X-ray');
+
+        if hasXray 
+          % adjust the gray level of X-ray 
+          [XIM,HIGHLOW]=ImageAdjust(XIM,2);
+          ImageShow(XIM);
+          fn=strcat(outpath,'\in\',TP,'_',lrtxt,'_X_',massFN(f).filename,'.tif');
+          imwrite(XIM,fn);
+          XIM0=ImageAdjust(XIM0,[],[],[],HIGHLOW);
+          Imageshow(XIM0);
+          Imout(:,:,2)=XIM0;  % green X-ray
+        
+          if f<=100
+            cx=(x1+x2)/2;cy=(y1+y2)/2;
+            cx=x1;cy=y1;
+            XIM2=65535-XIM0;
+            xoff=0;yoff=0;
+            cx=cx+xoff;cy=cy+yoff;
+            [xoff,yoff]=findcenter(MIM,XIM2,cx,cy,50);
+          end
+          %calculate the mask
+          % do the thresholding
+          level=graythresh(XIM);
+          th=level*65535;
+        else
+          level=1;
+        end 
+      
+
+
+end
+

@@ -1,0 +1,325 @@
+clc
+%clear all
+close all
+dbstop if error
+global doshow
+
+test=true;
+checkexist=0;
+checkits=1;
+fnxls='results.xls';
+max_iterations=2000;
+alpha=0.01;atxt='a001';
+method='otsuA';
+method='otsuW';
+method='locMax';
+%method='locMin';
+
+
+firstex=2;
+firstexstage=1;
+firststage=1;
+starttime=cputime;
+for exi=firstex:4
+  clear Va VS;
+  for exstage=firstexstage:2
+    %DATA INPUT
+    %choose the directory in which you have the pictures (write here the name of your folder):
+    rootpath='\\empa.emp-eaw.ch\data\nas\SinMultiScWood\E1\srPCXTM_TOMCAT\April_2010\';
+    datapath='rec_16bit\';
+    clear stagepath;
+    if exi==1
+      stagepath=[];
+    elseif exi==2
+      expath='Sample2_EL\';
+      if  exstage==1
+        stagep='Adsorption_1\';
+        stagepath(1)={'el2_20a\'};
+        stagepath(2)={'el2_40ea\'};
+        stagepath(3)={'el2_60a\'};
+        stagepath(4)={'el2_75a\'};
+        stagepath(5)={'el2_88a\'};
+      else 
+        stagep='Desorption\';
+        stagepath(1)={'el2_20d\'};
+        stagepath(2)={'el2_40d\'};
+        stagepath(3)={'el2_60d\'};
+        stagepath(4)={'el2_75d\'};
+      end
+    elseif exi==3
+      expath='Sample3_E\';
+      if  exstage==1
+        stagep='Adsorption_1\';
+        stagepath(1)={'ew3_20a\'};
+        stagepath(2)={'ew3_40a\'};
+        stagepath(3)={'ew3_60a\'};
+        stagepath(4)={'ew3_75a\'};
+        stagepath(5)={'ew3_85a\'};
+      else 
+        stagep='Desorption\';
+        stagepath(1)={'ew3_20b\'};
+        stagepath(2)={'ew3_40b\'};
+        stagepath(3)={'ew3_60b\'};
+        stagepath(4)={'ew3_75b\'};
+      end
+    elseif exi==4
+      expath='Sample4_L\';
+      if  exstage==1
+        stagep='Adsorption_1\';
+        stagepath(1)={'lw20_a\'};
+        stagepath(2)={'lw40_a\'};
+        stagepath(3)={'lw60_a\'};
+        stagepath(4)={'lw75_a\'};
+        stagepath(5)={'lw80_a\'};
+      else 
+        stagep='Desorption\';
+        stagepath(1)={'lw20_d\'};
+        stagepath(2)={'lw55_d\'};
+      end
+    end
+
+    %%% run through stages
+    for si=firststage:size(stagepath,2)
+      stagetime= cputime;
+      directory=strcat(rootpath,expath,stagep,char(stagepath(si)),datapath);
+      %\\empa.emp-eaw.ch\data\nas\SinMultiScWood\E1\srPCXTM_TOMCAT\April_2010\Sample2_EL\Adsorbtion_1\el2_20a\rec_16bit\*.tif
+      %\\empa.emp-eaw.ch\data\nas\SinMultiScWood\E1\srPCXTM_TOMCAT\April_2010\Sample2_EL\Adsorption_1\el2_20a\rec_16bit
+      %directory='E:\SNSF_Sinergia_Multiscale_Wood\srPCXTM_datasets\April_2010\Sample4_L\Adsorption_1\lw40_a\rec_16bit\';
+
+      %reading names of all *.tif files in the directory
+      fn=strcat(directory, '*.tif');
+      filename=dir(fn);
+      
+      %create outputpath
+      path=strcat(expath, char(stagepath(si)));
+      mkdir(path);
+      
+      fnres=strcat(expath,fnxls);
+      fn=dir(fnres);
+      if size(fn,1)==0
+        xlswrite(fnres,{'Results'},'Results','A1');
+        data={'stage','B','Va','VS','time'};
+        xlswrite(fnres,data,'Results','A2');
+      end
+      
+      row0=10;
+      ce=strcat('A',num2str(row0));
+      data={'filename','num','its','n','time'};
+      sheet=char(stagepath(si));
+      sheet=sheet(1:length(sheet)-1);
+      xlswrite(fnres,data,sheet,ce);
+
+      
+      
+      %loop over all pictures
+      pfirst=1;plast=size(filename,1);
+      if test; pfirst=500;plast=500;end;
+      
+      doshow=2;
+      
+      for pp=pfirst:plast
+          picturetime= cputime;
+          close all
+          if exi==1
+            rot=0;
+            x1=1;x2=1024;y1=1;y2=1024;
+            th=0;
+          elseif exi==2
+            rot=0;
+            x1=80;x2=980;y1=200;y2=800;
+            th=40000;
+          elseif exi==3
+            rot=-60;
+            x1=250;x2=1200;y1=300;y2=1100;
+            th=48000;
+          elseif exi==4
+            rot=-55;
+            x1=230;x2=1230;y1=350;y2=980;
+            th=50000;
+          end  
+            
+          %I1=imread(filename(pp).name);
+          fni =strcat(directory,filename(pp).name); 
+          I0=imread(fni);
+          %output file
+          fn=filename(pp).name;
+          p=find(fn=='.');
+          fn=fn(1:p(1)-1);
+          fno=strcat(path,fn,'.png');
+          fno2=strcat(path,fn,'_',atxt,'_',method,'.tif');
+          exist=0;its=9999;dosegment=0;
+          if checkexist
+            fn=dir(fno);
+            exist= size(fn,1)>0;
+          end  
+          %excell
+          ce=strcat('A',num2str(row0+pp),':','F',num2str(row0+pp));
+          if exist && checkits
+            data=xlsread(fnres,sheet,ce);
+            its=data(2);
+            n(pp)=data(3);
+          end
+          if ~exist || its>300
+            doshow=doshow-1;
+
+            if doshow>0; imageshow(I0,'input');end;
+            I1=imrotate(I0,rot);
+            if doshow>0; imageshow(I1,'rotated');end;
+            I2=I1(y1:y2,x1:x2);
+            if doshow>0; imageshow(I2,'croped');end;
+
+            dwy=int32((y2-y1)/4*3/2);dwx=int32((x2-x1)/4*3/2);
+            cy=int32((y2-y1)/2);cx=int32((x2-x1)/2);
+            %adjust to the center
+            LOW_HIGH = stretchlim(I2(cy-dwy:cy+dwy,cx-dwx:cx+dwx));
+            I=imadjust(I2,LOW_HIGH,[]);
+            if doshow>0; imageshow(I,'adjusted');end;
+            [sy, sx]=size(I);
+            m = zeros(sy,sx); %-- create initial mask 
+            %I=uint8(I);
+            %I=removebackground(I,255);
+
+            %I0=imadjust(I0);
+            %I0=histeq(I0);
+            %ImageShow(I0,'Start I0');
+            %h=fspecial('disk',3);
+            %I1=imfilter(I0,h);
+            %ImageShow(I1,'average disk');
+            if  strcmp(method,'otsuW') ||  strcmp(method,'otsuA')
+              % otsu th
+              th =graythresh(I);
+              if strcmp(method,'otsuA')
+                th=th*1.1;
+              else
+                th=th*0.9;
+              end  
+              m= im2bw(I,th);
+              if doshow>0 ; ImageShow(m,'mask');end;
+              bd=80;
+              [sy,sx]=size(m);
+              %mask the border
+              m(1:bd,1:sx)=0;
+              m(1:sy,1:bd)=0;
+              m(sy-bd:sy,1:sx)=0;
+              m(1:sy,sx-bd:sx)=0;
+              se=strel('disk',3);
+              m=imclose(m,se);
+              m=bwareaopen(m,20);
+            elseif strcmp(method,'locMax')
+              m1=imregionalmax(I);
+              th =graythresh(I);
+              m2=im2bw(I,th*.8);
+              m=double(m1)+double(m2);
+              m=m==2;
+            end    
+            points=sum(sum(m));
+            if points==0 
+              error 'no seeds'
+            end  
+            
+            m0=m;
+            if strcmp(method,'otsuA')
+              m=~m;
+            end  
+            
+            if doshow>0 ; ImageShow(m,'mask clean');end;
+            %resize to make it faster
+            %I = imresize(I,.5); %-- make image smaller 
+            %m = imresize(m,.5); % for fast computation
+
+            scrsz = get(0,'ScreenSize');
+            scx=200;scy=200;
+            figure('Position',[(1+scx) (scrsz(4)/2-scy) (scrsz(3)/2) (scrsz(4)/2)])
+
+            subplot(2,2,1); imshow(I); title('Input Image');
+            subplot(2,2,2); imshow(m); title('Initialization');
+            subplot(2,2,3); title('Segmentation');
+
+            %###############################################################################
+            %%-- Run segmentation 
+            [seg,its] = region_seg(I, m, max_iterations,alpha); 
+            %###############################################################################
+             if strcmp(method,'otsuA')
+              seg=~seg;
+            end  
+           
+            X=find(seg==1);
+            n(pp)=length(X);
+
+            clear Itif;
+            Itif(:,:,3)=I;
+            Itif(:,:,2)=m0*65535;
+            Itif(:,:,1)=seg*65535;
+            imwrite(Itif,fno2);
+            
+            %plot
+            subplot(2,2,4); imshow(seg); title('Global Region-Based Segmentation');
+
+            %Savedata
+            imwrite(seg,fno);
+         
+            ce=strcat('A',num2str(row0+pp));
+            %data={'filename','num','its','n','time'};
+            picturetime=cputime-picturetime;
+            data={fno,pp,its,n(pp),picturetime};
+            xlswrite(fnres,data,sheet,ce);
+            
+          else
+            %seg=imread(fno);
+            %seg=seg>0;
+          end
+          
+       
+      end %loop pictures
+   
+      B=sum(n);
+      Va(si)=0.343*B;
+      VS(si)=(Va(si)-Va(firststage))/Va(firststage);
+      stagetime=cputime-stagetime;
+      %data={'stage','B','Va','VS','time};
+      data={char(stagepath(si)),B,Va(si),VS(si),stagetime};
+      ce=strcat('A',num2str(si+(exstage-1)*6+2));
+      xlswrite(fnres,data,'Results',ce);
+      clear B
+    end %stages
+  end % exstage
+  if exi==1
+     x1=[];
+  elseif exi==2
+    if exstage==1
+      x1=[20;40;60;75;88];
+      y1=[VS(1);VS(2);VS(3);VS(4);VS(5)];
+    else
+      x2=[20;40;60;75];
+      y2=[VS(1);VS(2);VS(3);VS(4)];
+    end
+  elseif exi==3
+    if exstage==1
+      x1=[20;40;60;75;85];
+      y1=[VS(1);VS(2);VS(3);VS(4);VS(5)];
+    else
+      x2=[20;40;60;75];
+      y2=[VS(1);VS(2);VS(3);VS(4)];
+    end
+  elseif exi==4
+    if exstage==1
+      x1=[20;40;60;75;85];
+      y1=[VS(1);VS(2);VS(3);VS(4);VS(5)];
+    else
+      x2=[20;55];
+      y2=[VS(1);VS(2)];
+    end
+  end 
+  if ~isempty(x1)
+     fn='plotres';
+     fn=strcat(path,fn);
+     h=figure;
+     plot(x1,y1,x2,y2);
+     saveas(h,fn);
+  end
+end %loop experiment
+
+time=cputime-starttime;
+time=num2str(time);
+msg=strcat('done  time:',time);
+msgbox(msg);   

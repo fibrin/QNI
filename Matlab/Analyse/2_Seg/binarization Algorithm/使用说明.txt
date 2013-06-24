@@ -1,0 +1,24 @@
+该文件夹中有四个matlab文件，说明如下：
+
+binariztion.m: 二值化主程序，分别调用下面三种二值化算法。
+
+otsu.m:       表示otsu全局二值化算法。
+kittlerMet.m: 表示kittler 最小分类错误(minimum error thresholding)全局二值化算法。
+niblack.m:    表示niblack局部二值化算法。
+
+coins.bmp: 原始灰度图片。
+coins_bw_otsu.bmp: otsu全局二值化结果。
+coins_bw_kittler.bmp: kittler 最小分类错误全局二值化结果。
+coins_bw_niblack.bmp: niblack 局部二值化结果。
+
+运行程序一点小提示：
+先打开Matlab，把整个文件夹复制到Matlab软件的work目录下面，将文件夹binarization Algorithm
+设为Matlab当前目录(current directory)，直接在命令窗口敲入binarization, 回车就可以运行了。
+
+ps: 我用的是Matlab 2006。此外，我编的这几个二值化程序不一定很完善，望给予改进并告知。谢谢。
+
+如果存在什么问题，欢迎来找我。
+
+by 许亮
+lxu@nlpr.ia.ac.cn
+2009年4月7日

@@ -1,0 +1,261 @@
+clc
+clear all
+close all
+ 
+% %DATA INPUT
+% %choose the directory in which you have the pictures (write here the name of your folder):
+% directory='C:\Documents and Settings\paa118\Desktop\LW\20% roi\';
+% %current directory (sets the given directory as current directory, so it will work in the folder you have put on line 6, e.g. if you safe a processed image, it will do it in this folder)
+% cd(directory);
+% %reading names of all *.tif files in the directory
+% directory='C:\Documents and Settings\paa118\Desktop\LW\20% roi\';
+%  
+% filename=dir([directory '*.tif']);
+% you want to do a calculation with every picture in the directory, so you
+% have to make a loop in matlab over all these pictures
+% in my case I had 1024 pictures
+% %  
+% for pp=1:6
+%     
+% %I1=imread(filename(pp).name);
+% fn =strcat(directory,filename(pp).name);
+% I=imread(fn);
+% %imshow(I);
+%  [sy, sx]=size(I);
+%  
+% m = zeros(size(I,1),size(I,2)); %-- create initial mask 
+% 
+% m(32:64,39:96) =1;
+% m(30:59,265:311) =1;
+% 
+% % m(22:53,453:505) =1;
+% % m(85:120,58:104) =1;
+%  m(80:116,288:346) =1;
+% % m(164:187,53:85) =1;
+% % m(144:173,408:456) =1;
+% % m(209:244,170:220) =1;
+% 
+% m(192:225,492:552) =1;
+% m(264:291,194:226) =1;
+% m(247:283,518:557) =1;
+% 
+% I = imresize(I,.5); %-- make image smaller 
+% m = imresize(m,.5); % for fast computation
+% %imshow(m);
+% phi = mask2phi(m);
+%  
+% subplot(2,2,1); imshow(I); title('Input Image');
+% subplot(2,2,2); imshow(m); title('Initialization');
+% subplot(2,2,3); title('Segmentation');
+%  
+% seg = region_seg(I, m, 1200); %-- Run segmentation
+%  
+% subplot(2,2,4); imshow(seg); title('Global Region-Based Segmentation');
+%  
+% X1=find(seg==1);
+% n1(pp)=length(X1);
+% end
+%  B1=sum(n1);
+%  
+% for pp=7:34
+%     
+% %I1=imread(filename(pp).name);
+% fn =strcat(directory,filename(pp).name);
+% I=imread(fn);
+% %imshow(I);
+%  [sy, sx]=size(I);
+%  
+% m = zeros(size(I,1),size(I,2)); %-- create initial mask 
+% 
+% m(147:183,290:345)=1;
+% m(24:51,410:455)=1;
+% m(264:300,144:184)=1;
+% %m(246:282,474:514)=1;
+% 
+% I = imresize(I,.5); %-- make image smaller 
+% m = imresize(m,.5); % for fast computation
+% %imshow(m);
+% phi = mask2phi(m);
+%  
+% subplot(2,2,1); imshow(I); title('Input Image');
+% subplot(2,2,2); imshow(m); title('Initialization');
+% subplot(2,2,3); title('Segmentation');
+%  
+% seg = region_seg(I, m, 1400); %-- Run segmentation
+%  
+% subplot(2,2,4); imshow(seg); title('Global Region-Based Segmentation');
+%  
+% X2=find(seg==1);
+% n2(pp)=length(X2);
+% end
+%  B2=sum(n2);
+% 
+% for pp=35:68
+%     
+% %I1=imread(filename(pp).name);
+% fn =strcat(directory,filename(pp).name);
+% I=imread(fn);
+% %imshow(I);
+%  [sy, sx]=size(I);
+%  
+% m = zeros(size(I,1),size(I,2)); %-- create initial mask 
+% 
+% m(140:181,296:342)=1;
+% m(86:126,57:109)=1;
+% m(291:338,459:496)=1;
+% m(135:173,539:559)=1;
+% m(265:297,185:224)=1;
+% %m(246:282,474:514)=1;
+% m(19:46,460:504)=1;
+% 
+% I = imresize(I,.5); %-- make image smaller 
+% m = imresize(m,.5); % for fast computation
+% %imshow(m);
+% phi = mask2phi(m);
+%  
+% subplot(2,2,1); imshow(I); title('Input Image');
+% subplot(2,2,2); imshow(m); title('Initialization');
+% subplot(2,2,3); title('Segmentation');
+%  
+% seg = region_seg(I, m, 1200); %-- Run segmentation
+%  
+% subplot(2,2,4); imshow(seg); title('Global Region-Based Segmentation');
+%  
+% X3=find(seg==1);
+% n3(pp)=length(X3);
+% end
+%  B3=sum(n3);
+%  
+% for pp=69:89
+%     
+% %I1=imread(filename(pp).name);
+% fn =strcat(directory,filename(pp).name);
+% I=imread(fn);
+% %imshow(I);
+%  [sy, sx]=size(I);
+%  
+% m = zeros(size(I,1),size(I,2)); %-- create initial mask 
+% 
+% %m(21:47,461:511)=1;
+% % m(69:107,404:440)=1;
+% m(146:178,256:291)=1;
+% % m(300:342,117:155)=1;
+% %m(299:343,205:255)=1;
+% I = imresize(I,.5); %-- make image smaller 
+% m = imresize(m,.5); % for fast computation
+% %imshow(m);
+% phi = mask2phi(m);
+%  
+% subplot(2,2,1); imshow(I); title('Input Image');
+% subplot(2,2,2); imshow(m); title('Initialization');
+% subplot(2,2,3); title('Segmentation');
+%  
+% seg = region_seg(I, m, 2000); %-- Run segmentation
+%  
+% subplot(2,2,4); imshow(seg); title('Global Region-Based Segmentation');
+%  
+% X4=find(seg==1);
+% n4(pp)=length(X4);
+% end
+%  B4=sum(n4);
+
+ 
+% for pp=139:856 %don't work...
+%     
+% I1=imread(filename(pp).name);
+% fn =strcat(directory,filename(pp).name);
+% I=imread(fn);
+% %imshow(I);
+% [sy, sx]=size(I);
+%  
+% m = zeros(size(I,1),size(I,2)); %-- create initial mask 
+% 
+% m(160:197,318:356)=1;
+% 
+% I = imresize(I,.5); %-- make image smaller 
+% m = imresize(m,.5); % for fast computation
+% %imshow(m);
+% phi = mask2phi(m);
+%  
+% subplot(2,2,1); imshow(I); title('Input Image');
+% subplot(2,2,2); imshow(m); title('Initialization');
+% subplot(2,2,3); title('Segmentation');
+%  
+% seg = region_seg(I, m, 2000); %-- Run segmentation
+%  
+% subplot(2,2,4); imshow(seg); title('Global Region-Based Segmentation');
+%  
+% X5=find(seg==1);
+% n5(pp)=length(X5);
+% end
+%  B5=sum(n5);
+% 
+%  
+% for pp=857:1024 %don't work...
+%     
+% I1=imread(filename(pp).name);
+% fn =strcat(directory,filename(pp).name);
+% I=imread(fn);
+% %imshow(I);
+% [sy, sx]=size(I);
+%  
+% m = zeros(size(I,1),size(I,2)); %-- create initial mask 
+% 
+% m(109:154,100:147)=1;
+% m(147:184,271:319)=1;
+% m(97:131,514:545)=1;
+% m(10:30,471:475)=1;
+% m(6:26,571:574)=1;
+% m(8:27,517:526)=1;
+% m(5:47,468:477)=1;
+% 
+% % m(147:170,269:300)=1;
+% % m(44:93,419:456)=1;
+% % m(96:136,512:549)=1;
+% % m(100:144,158:195)=1;
+% 
+% I = imresize(I,.5); %-- make image smaller 
+% m = imresize(m,.5); % for fast computation
+% %imshow(m);
+% phi = mask2phi(m);
+%  
+% subplot(2,2,1); imshow(I); title('Input Image');
+% subplot(2,2,2); imshow(m); title('Initialization');
+% subplot(2,2,3); title('Segmentation');
+%  
+% seg = region_seg(I, m, 1200); %-- Run segmentation
+%  
+% subplot(2,2,4); imshow(seg); title('Global Region-Based Segmentation');
+%  
+% X6=find(seg==1);
+% n6(pp)=length(X6);
+% end
+%  B6=sum(n6);
+
+%DATA INPUT
+%choose the directory in which you have the pictures (write here the name of your folder):
+directory='C:\Documents and Settings\paa118\Desktop\Alessandra_Active Contourn\problematic_roi_LW\segmented\';
+%current directory (sets the given directory as current directory, so it will work in the folder you have put on line 6, e.g. if you safe a processed image, it will do it in this folder)
+cd(directory);
+%reading names of all *.tif files in the directory
+directory='C:\Documents and Settings\paa118\Desktop\Alessandra_Active Contourn\problematic_roi_LW\segmented\';
+ 
+filename=dir([directory '*.tif']);
+%you want to do a calculation with every picture in the directory, so you
+%have to make a loop in matlab over all these pictures
+%in my case I had 1024 pictures
+ 
+for pp=1:49
+    
+I1=imread(filename(pp).name);
+
+I=I1/255;
+
+X7=find(I==1);
+n7(pp)=length(X7);
+end
+B7=sum(n7);
+
+% % B=B1+...
+% % Va1=0.343*B;
+

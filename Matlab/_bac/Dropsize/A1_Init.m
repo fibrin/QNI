@@ -1,0 +1,13 @@
+clear;
+close all;
+imtool close all;
+path(path,'..\_snips');
+path(path,'_snips');
+global ImShowFlag ImShowPos  ImShowList;
+global WorkDir;
+dbstop if error;
+warning('off','MATLAB:MKDIR:DirectoryExists');
+warning('off','MATLAB:colon:nonIntegerIndex');
+ImShowPos=1;
+ImShowList(ImShowPos)=1;
+ImShowFlag=0;

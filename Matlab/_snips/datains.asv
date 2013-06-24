@@ -1,0 +1,60 @@
+function [ dat ] = datains( data,cells,RightDown )
+% datains( data,{v1,v2,v3,v4..},RightDown ) 
+% RightDown 0:def
+%   Write next cell on the same row in the next col
+%   Write the next cell on the 
+%
+%   Detailed explanation goes here
+%row,col
+[dr,dc]=size(data);
+dcx=dc;
+[cr,cc,cb]=size(cells);
+if (nargin < 3) || isempty(RightDown),RightDown=0;end;
+if RightDown==0
+  % right same row  
+  for c1x=1:dc
+    if isempty(cell2mat(data(dr,c1x)))
+      dcx=c1x-1;
+      break;
+    end
+  end
+  c1=dcx+1;
+  r1=dr;
+  if r1==0 ,r1=1;end
+else
+  % down next row  
+  c1=1;
+  r1=dr+1;
+end
+dat=data;
+for r=1:cr
+    r2=r1+r-1;
+    for c=1:cc
+        c2=c1+c-1;
+        ce=cells{r,c};
+        if ischar(ce)
+            %adding Chars
+            dat(r2,c2)=cells(r,c);
+        else
+            %adding Matrix
+            [vr vc vz]=size(ce);
+            if vr==0, % 1  cs 6.4.2011
+               cx=zeros(vc,vz);
+               cx(1:vc,1:vz)=ce(1,1:vc,1:vz);
+               ce=cx;
+               vr=vc;vc=vz;
+            end   
+            for rx=1:vr
+                r3=r2+rx-1;
+                for cx=1:vc
+                    c3=c2+cx-1;
+                    dat{r3,c3}=ce(rx,cx);
+                end
+            end
+        end    
+    end
+end
+
+
+end
+
