@@ -1,12 +1,12 @@
 function [Flist,Anz ] = GetFiles( imPath,defFn)
-
-% Reads in the filelist in Path match the defFn pattern
-% Flist record nameFilenamechar array
-%              dateModification date timestampchar array
-%              bytesNumber of bytes allocated to the filedouble
-%              isdir1 if name is a directory; 0 if notlogical
-%              datenumModification date as serial date numberchar array
-
+%% Reads in the filelist in Path match the defFn pattern
+% Flist: Flist record 
+%   .nameFilenamechar array
+%   .dateModification date timestampchar array
+%   .bytesNumber of bytes allocated to the filedouble
+%   .isdir1 if name is a directory; 0 if notlogical
+%   .datenumModification date as serial date numberchar array
+%%
 onlyDir=0;
 onlyPic=0;
 if nargin<1 || isempty(imPath)

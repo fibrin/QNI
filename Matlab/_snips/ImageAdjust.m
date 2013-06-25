@@ -4,9 +4,9 @@ function [ Ir, lowhigh ] = ImageAdjust(Im,rngtol,center,restp,fit)
 %[ Ir, lowhigh ] = ImageAdjust(Im,tol,center,restp,rng)
 % Im: Image
 % tol: toleranz% (2)
-% center:0...1  look in th center of the image +- center  (1)
-% restp: resulttype 0=>0..1 1=>original 2=>uint8 3=>unit16  (1)
-% rng: fit to range [min..max value  
+% center:0...1  look in th center of the image +- center  (0)
+% restp: resulttype []=>original 0=>dbl no bdcheck 1=>0..1 2=>uint8 3=>unit16  ([])
+% rng: fit to range [min..max] value  
  
 
  
@@ -67,10 +67,14 @@ function [ Ir, lowhigh ] = ImageAdjust(Im,rngtol,center,restp,fit)
     f=(imax-imin)/1;
     imin1=imin+lowhigh(1)*f;
     imax1=imin+lowhigh(2)*f;
+    iminf=imin1;
+    imaxf=imax1;
     f=(imax1-imin1)/(fit(2)- fit(1));
     f=1/f;
-    iminf=(fit(1)-f*(imin1))/(1-f);
-    imaxf=iminf+1/f;
+    if ~(f==1)
+      iminf=(fit(1)-f*(imin1))/(1-f);
+      imaxf=iminf+1/f;
+    end  
     rng(1)=iminf;
     rng(2)=imaxf;
  end  

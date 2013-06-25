@@ -1,6 +1,9 @@
 function [ Imo] = ImBorderSet( Im,bd,pixv,frame )
-%IMBORDERCLEAN Summary of this function goes here
-%   Detailed explanation goes here
+% changes the values of the imige border
+% Im the image
+% bd pixelwidth of the border default=1
+% or [x1,y1]
+% pix the value of the pixels added to the image def=0
 if ~exist('bd','var')
   bd=1;
 end

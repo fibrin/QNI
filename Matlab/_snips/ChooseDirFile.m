@@ -1,6 +1,11 @@
 function [ PathString ] = ChooseDirFile( def,tp,title,flg)
-%%
-%
+%  OpenF File Dialog to choose a File
+%  def: default file name to be searched
+%  tp : file tipe '*','PIC','DIR'
+%  title: window title
+%  flg: not used
+%  PathSting: the file name or []
+
   PathString=[];
   st=[];
   if nargin<4 || isempty(flg)

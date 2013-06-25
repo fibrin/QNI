@@ -1,6 +1,15 @@
 function [ RGB ] = compareBaseInput( BaseImage,RegisteredInputImage,ROI,doAdjust )
-%% Compare the original input image, the base image and the registered
-%  input image
+%% Compare the images by substraction 
+%  BaseImage            : original image 
+%  RegisteredInputImage : the registered  (transformed input image)
+%  ROI: cut out a region of intrest
+%  doAdjust: 0,1 do imadjust befor Subtraction 1=default
+%  RGB : Output in Colors
+%   Red  = Base-Reg <0= 0
+%   Green= Reg-Base <0 =0
+%   Blue = BaseImage
+%%
+
         [sy,sx]=size(BaseImage);
         if nargin<3 || isempty(ROI)
           ROI(1,1)=1;ROI(2,1)=sx;ROI(1,2)=1;ROI(2,2)=sy;
@@ -22,9 +31,9 @@ function [ RGB ] = compareBaseInput( BaseImage,RegisteredInputImage,ROI,doAdjust
         %s2=ImageAdjust(s2);
 
         %RGB(:,:,2)=BaseImage;
-        RGB(:,:,1)=s1;
-        RGB(:,:,2)=s2;
-        RGB(:,:,3)=BI;
+        RGB(:,:,1)=s1;'R'
+        RGB(:,:,2)=s2;'G'
+        RGB(:,:,3)=BI;'B'
         ImageShow(RGB,'base image vs registered input one');
  
 end

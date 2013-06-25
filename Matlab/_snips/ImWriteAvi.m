@@ -9,7 +9,7 @@ if ~exist('fn','var')
   fn='movie.avi';
 end  
 
-fn=strcat(ResDir,'\',fn);
+fn=strcat(ResDir,fn);
 
   if ~exist('MovT','var') || isempty(MovT);
      MovT=5;

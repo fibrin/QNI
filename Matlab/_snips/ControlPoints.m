@@ -1,15 +1,9 @@
 function [InputPoints,BasePoints]=ControlPoints(Itrns,Ibase,InputPoints_in,BasePoints_in,check)
-% AffDefEstimate.m
-% Script implementing the procedure for comparing two images and determine
-% the optimal parameters of an affine mapping from one image to the other.
-% After the determination of the affine mapping's parameters, the mapping
-% itself is applied to the image to be aligned to the reference one
-% (affine registration).
-% N.B. #1: The images can be grayscale, truecolor, or binary. A grayscale
-% image can be uint8, uint16, int16, single, or double. A truecolor image
-% can be uint8, uint16, single, or double. A binary image is of class
-% logical.
-
+%% Select Controlpoint on two images
+% 
+% check : 0 no user interface 
+%
+%
 
 %% Start
 if ~exist('Itrns')

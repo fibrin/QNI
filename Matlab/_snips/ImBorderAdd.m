@@ -1,12 +1,14 @@
 
 function [ Imo] = ImBorderAdd( Im,bd,pix )
-%IMBORDERCLEAN Summary of this function goes here
-%   Detailed explanation goes here
+% Adds a border to image
+% Im the image
+% bd bixelwidth of the border sedfaul=1
+% pix the value of the pixels added to the image def=0
 if ~exist('bd','var')
   bd=1;
 end
 if ~exist('pix','var')
-  pix=-1;
+  pix=0;
 end
 sx=size(Im,2);
 sy=size(Im,1);

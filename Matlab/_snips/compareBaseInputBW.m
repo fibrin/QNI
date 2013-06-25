@@ -1,6 +1,13 @@
 function [ DIFbw ] = compareBaseInputBW( BaseImage,RegisteredInputImage,ROI,doAdjust,TH )
-%% Compare the original input image, the base image and the registered
-%  input image
+%% Compare the images by substraction 
+%  BaseImage            : original image 
+%  RegisteredInputImage : the registered  (transformed input image)
+%  ROI: cut out a region of intrest
+%  doAdjust: 0,1 do imadjust befor Subtraction 1=default
+%  TH: threshold for binarisation  [] => max(otsu,0.35)
+%  Difbw : (Base-Reg+1)/2 => adjusted to fit 0..1
+%    
+%%
         if nargin<3 || isempty(ROI)
           [sy1,sx1]=size(BaseImage);
           [sy2,sx2]=size(RegisteredInputImage);
