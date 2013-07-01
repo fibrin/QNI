@@ -1,5 +1,4 @@
-test  dddd
-
+  
 
  %{
 ***************************************************************************
@@ -30,7 +29,7 @@ test  dddd
    
     %SampleDir='Meule\RH11_V1\3';  % 25.1
     %SampleDir='Meule\RH50_V1\7';  % 25.1
-    SampleDir='\Meule\RH50_V1\7';  % 25.1
+    SampleDir='\Meule\RH11_V1\3';  % 25.1
     
     SampleDir=strcat(RAWDATA,SampleDir);
  
@@ -49,7 +48,7 @@ test  dddd
     
     
   %% Options    
-     ImShowFlag=1;
+     ImShowFlag=0;
      option.test=0;  
      option.chooseROI=0;
      option.AnalyseAll=0;  
@@ -59,7 +58,7 @@ test  dddd
      option.AnalyseSS=0; 
      option.AviContour=0;
      %QNI
-     option.AnalyseQni=0;
+     option.AnalyseQni=1;
      option.QniContour=0;
      option.QniShape=0;
      option.QniWaterContent=1;
@@ -110,9 +109,9 @@ test  dddd
        sec2=AviTime-(floor(AviTime/60)*60); %sec from the lastpicture
        nm=AviFile(1).filename;
        l=length(nm);
-       sec1=nm(l-1:l);
+       sec1=nm(l-1:l); %sec1 = trigger time
        sec1=str2num(sec1);    % sec from the drop
-       td=sec2-sec1;
+       td=sec2-sec1;        % td is the time when image has drop on avi
        if td<0,td=td+60;end;  % time from drop to last pic
        [AviFile,cnt]=GetFiles(strcat(SampleDir ,'\AVI'),'*.Tif');
        td2=td;                     % time after drop
@@ -126,7 +125,7 @@ test  dddd
        EndTime=(QniFile(1).datenum)*24*3600;
        td=EndTime-StartTime;
        [QniFile,cnt]=GetFiles(strcat(SampleDir,'\QNI'),strcat('S',Sample,'_*.fits'));
-       QniFrameRate=(cnt-10)/td;  %pics/sec    firts 10 pics are Refpic
+       QniFrameRate=(cnt-10)/td;  %pics/sec    firts 10 pics are Refpic if case has less than 10 pic for ref. please change digit
        
        %HS frameRate
        HSStartTime=0;
@@ -290,11 +289,11 @@ test  dddd
        for i=1:QniCnt
          if WaterMass(i)>0 || i<13
           if Time3(i)>timesteps(ts) || doAll
-           nm=strcat('t=',num2str(round(Time3(i))));
+           nm=strcat('t = ', num2str(Time3(i)),' [sec]'); %round(Time3(i))
            %% Calc water content
            water=BW{i};
            Mass=WaterContent{i};
-           ROImask=zeros(size(Mass)); 
+           ROImask=zeros(size(Mass));
            w=220;h=160;cx=round(size(Mass,2)/2);cy=110;
            ROImask(cy-h/2:cy+h/2,cx-w/2:cx+w/2)=1;
            pixsize=45.5*1E-6;
@@ -309,16 +308,20 @@ test  dddd
            % WC=MassKgm3.*water;
            WC=MassKgm3;
            crop=WC(cy-h/2:cy+h/2,cx-w/2:cx+w/2);
+           Plotcrop=Mass(cy-h/2:cy+h/2,cx-22/2:cx+22/2);
+           PlotMass=sum(Plotcrop,2);
+           PlotMC{i}=PlotMass/(pixsize*thickness*1E-3)/1000;
            f=figure;
            imshow(crop);
            colormap(jet(20));
            %colormap(gray(10));
            caxis([0 250]);
-           h = colorbar('vertical'); 
+           h = colorbar('vertical');
+           title(nm, 'FontSize', 16);
            set(f,'Position',[300 300 1000 700 ]); %left,buttom,width,height
            set(f,'name',strcat('WC ',nm));
            mov=ImAddToMovie( mov,f );
-           %SaveFig(f);
+           SaveFig(f);
            close(f);
            if ts<Cts,ts=ts+1;end;
           end  
@@ -327,6 +330,12 @@ test  dddd
        save(fn,'WCarea','WCmass');
        fn=strcat('Watercontent.avi');
        ImWriteAvi( fn,mov);
+       %plot moisture contents in 1 mm
+       xaxis=160:-1:0;
+       hold;
+       for iii=11:22
+           plot(PlotMC{iii}, xaxis);
+       end
      else
        load(fn)       
      end
@@ -342,19 +351,22 @@ test  dddd
   %% HS  Highspeed Camera
      BW=[];
      fn=strcat(ResDir, '\HS.mat');
-     if  ~exist(fn,'file') ||option.AnalyseHS || option.AnalyseAll
-        if exist(fn,'file') 
-           load(fn,'ROI');
-        else
-           ROI=[];
-        end   
-        FristTime=HSStartTime; % time for the first pic
-        [Time4,Area4,Gray4,BW,StoneHS,ROI]=AnalyseHS(SampleDir,FristTime,HSFrameRate,ROI,option);
-        HSCnt=length(Time3);
-        save(fn,'HSCnt','Time3','Area3','Gray3','BW','StoneHS','ROI');
-     else   
-        load(fn);
-     end   
+     if option.AnalyseHS || option.AnalyseAll
+         if  ~exist(fn,'file')
+             if exist(fn,'file')
+                 load(fn,'ROI');
+             else
+                 ROI=[];
+             end
+             FristTime=HSStartTime; % time for the first pic
+             [Time4,Area4,Gray4,BW,StoneHS,ROI]=AnalyseHS(SampleDir,FristTime,HSFrameRate,ROI,option);
+             HSCnt=length(Time3);
+             save(fn,'HSCnt','Time3','Area3','Gray3','BW','StoneHS','ROI');
+         else
+             load(fn);
+         end
+     end
+     
        
   %% HSVolume
      fig=[];
