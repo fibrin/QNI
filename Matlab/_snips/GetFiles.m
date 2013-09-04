@@ -12,7 +12,7 @@ onlyPic=0;
 if nargin<1 || isempty(imPath)
   imPath=char(System.Environment.CurrentDirectory);
 end
-if ~exist('defFn','var') || isempty(defFn)
+if ~exist('defFn','var') 
   defFn='*.*';
 end
 if strcmpi(defFn,'DIR')

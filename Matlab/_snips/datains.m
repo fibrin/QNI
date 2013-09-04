@@ -6,9 +6,9 @@ function [ dat ] = datains( data,cells,LeftDown )
 % Example 
 % start    data={};
 % header   data=datains(data,{'x', 'y', 'xc', 'yc', 'xa', 'ya'});
-% skip col data=datains(data,{''});
+% skip row data=datains(data,{''});
 % scalar   data=datains(data,{cx,cy});
-% scalar   data=datains(data,{Mat,Mat2});
+% matrix   data=datains(data,{Mat,Mat2});
 
 
 
@@ -16,7 +16,7 @@ function [ dat ] = datains( data,cells,LeftDown )
 [dr,dc]=size(data);
 dcx=dc;
 [cr,cc,cb]=size(cells);
-if (nargin < 3) || isempty(LeftDown),LeftDown=0;end;
+if (nargin < 3) || isempty(LeftDown),LeftDown=1;end;
 if LeftDown==0
   % right same row  
   for c1x=1:dc

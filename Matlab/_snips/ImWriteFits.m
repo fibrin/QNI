@@ -105,10 +105,12 @@ function [ output_args ] = ImWriteFits( filename, data, varargin )
   % compatibility with fitsread if requested.
   szData=size(data);
   if length(szData) > 1 && transposeRC
+      data=flipud(data); %updown
       order=1:length(szData);
       order(1:2)=[2,1];
       data=permute(data, order);
   end
+  
 
   % Generate an N x 80 character array hStr containing the FITS header
   % information.  'struct2str' is called if the supplied header is a

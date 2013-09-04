@@ -26,15 +26,18 @@ function   BW=ChanVeseBW(I,option)
    ds=mas-mis;       % range max-min with in area
    dif1=(mdw-mds);   % diff between meanvalues
    dif2=((dw-ds));   % diff between ranges
+   m=zeros(size(I)); 
+   w=220;h=160;cx=round(size(I,2)/2);cy=110;
+   
+   %w=50;h=50;cx=round(size(I,2)/2);cy=70;
+   m(cy-h/2:cy+h/2,cx-w/2:cx+w/2)=1;
    if dif2<0.05  
-     % no water
-     seg= false(size(I));
+     % no water mask
+     seg= m;
    else
      % water 
-      m=zeros(size(I)); 
-      w=220;h=160;cx=round(size(I,2)/2);cy=110;
-      m(cy-h/2:cy+h/2,cx-w/2:cx+w/2)=1;
-      seg = chenvese(I,m,400,0.02,'chan'); % ability on gray image
+     seg = chenvese_it(I,m,600,0.2,'chan',option); % ability on gray image
+     %seg = chenvese_it(I,m,400,0.05,'chan',option); % ability on gray image
    end  
    BW=seg;
 end

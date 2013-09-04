@@ -19,9 +19,9 @@ function [ w1,w2,fig] = AnalyseShapeHS( BW,fig,basline)
         % Ix=I0(y1:y2,x1:x2);
         % if wr ,imwrite(Ix,fn);end;
         %% Find curve
-        [H,L,xmin,xmax,V]=FindTangent(S,fig);
+        [ymin,ymax,xmin,xmax,V] = FindCurve(S,fig);
         % Fit the curves 
-        [w1,w2]=FitCurv(V,fig);
+        [w1,w2]=FitCurve(V,fig);
       end
      
  

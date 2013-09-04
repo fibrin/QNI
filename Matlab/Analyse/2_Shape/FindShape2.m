@@ -1,20 +1,29 @@
 function [R, B] = FindShape2(BW, fig)
-%FINDSHAPE2 Summary of this function goes here
-%   Detailed explanation goes here
+  %  finds the largest shape ( object) in a black white image
+  %  input 
+  %   BW black white Image
+  %   fig not used
+  %  output 
+  %    R :largest white Object in the image
+  %    B :longest boundary  should be  boundary of the object
+  % ---------------------------------------------------------- 
    
-    %%
+    %% Region an its properties
     R=[]; 
     L1=bwlabel(BW);
     R1=regionprops(L1,{'Centroid','Area','Eccentricity','BoundingBox','MajorAxisLength','MinorAxisLength','Orientation'});
     if length(R1)<1
+      %no region
       return
-    end  
+    end
+    %get largest region
     a=[R1(:).Area];
     [idx] = find(max(a));
     R=R1(idx(1));
     
-    %%
-    [bnd,L,N]=bwboundaries(BW);
+    %% boundary vector
+    B=[];
+   [bnd,L,N]=bwboundaries(BW);
     %find largest boundary
     cm=0;bi=0; 
     for i=1:N
@@ -25,11 +34,8 @@ function [R, B] = FindShape2(BW, fig)
         cm=cnt;
       end
     end
-
     if bi>0
       B=bnd{bi};
-    else
-      B=[];
     end
     
     

@@ -1,7 +1,10 @@
 function [ imr ] = imReadMean( impath,Filename,nums,start )
-% Read nums Images and take calc average
-% if num > 0 start fis first
+% Read nums Images and calc average
+% if num > 0 start with first
 % if num < 0 start with last
+% if start>0 start with first
+% if start<0 start with last-start
+% if the Meanfile already exists just read the meanfile
 [Flist,anz]=GetFiles(impath,Filename);
 if anz>0
   from=1;
@@ -29,17 +32,19 @@ if anz>0
       end    
     end
   end  
-  hasMean=0;
-  %Fn=Flist(1).filename;
-  %meanfilename=strcat(Fn,'_M.tif');
-  %[FN,hasMean]=GetFiles(impath,meanfilename);
+  Fn=Flist(1).filename;
+  meanfilename=strcat(impath,'\',Fn,'_M.fits');
+  hasMean=exist(meanfilename,'file');
   cnt=0;
-  if hasMean==1
-    imr=imread(FN(1).fullname);
+  %hasMean=0;
+  if hasMean
+    imr=ImReadFits(meanfilename);
   else  
     for i=from:to
       fn=Flist(i).fullname;
       im=imReadDbl(fn);
+      im=imFilter(im,'rem',2,5);
+      ImageShow(im,strcat('REF',num2str(i)),[],1);
       cnt=cnt+1;
       if i==from
         im0=im;
@@ -49,9 +54,8 @@ if anz>0
     end %for  
     im0=(im0/cnt);
     imr=im0;
+    ImWriteFits(meanfilename,imr);
   end  
-  %imr=uint16(im0);
-  %imwrite(imr,strcat(impath,'\',meanfilename));
 else
   msgbox(strcat('check Sample:',Filename));
   imr=[];
